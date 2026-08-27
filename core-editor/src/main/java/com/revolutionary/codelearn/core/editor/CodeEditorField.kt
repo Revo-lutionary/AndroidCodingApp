@@ -11,6 +11,10 @@ import io.github.rosemoe.sora.widget.CodeEditor
  * Wraps Sora-Editor's [CodeEditor] View for use in Compose. Per-language
  * TextMate syntax highlighting is wired in a later phase; this establishes
  * the module boundary and the two-way text binding.
+ *
+ * [onEditorReady] hands back the underlying [CodeEditor] so callers (e.g. a
+ * symbol toolbar) can insert text at the current cursor position via
+ * [insertAtCursor].
  */
 @Composable
 fun CodeEditorField(
@@ -18,6 +22,7 @@ fun CodeEditorField(
     onCodeChange: (String) -> Unit,
     language: Language,
     modifier: Modifier = Modifier,
+    onEditorReady: (CodeEditor) -> Unit = {},
 ) {
     AndroidView(
         modifier = modifier,
@@ -27,6 +32,7 @@ fun CodeEditorField(
                 subscribeEvent(ContentChangeEvent::class.java) { _, _ ->
                     onCodeChange(text.toString())
                 }
+                onEditorReady(this)
             }
         },
         update = { editor ->
@@ -35,4 +41,10 @@ fun CodeEditorField(
             }
         },
     )
+}
+
+/** Inserts [text] at the editor's current cursor position. */
+fun CodeEditor.insertAtCursor(text: String) {
+    val cursor = this.cursor
+    this.text.insert(cursor.leftLine, cursor.leftColumn, text)
 }

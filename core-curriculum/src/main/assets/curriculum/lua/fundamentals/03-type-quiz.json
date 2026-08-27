@@ -1,0 +1,7 @@
+{
+  "id": "03-type-quiz",
+  "prompt": "What does `type(\"Hello\")` return?",
+  "choices": ["\"word\"", "\"string\"", "\"text\"", "\"Hello\""],
+  "correctIndex": 1,
+  "explanation": "type() returns the name of a value's type as a string. Text values in Lua are always of type \"string\", regardless of their contents."
+}

@@ -1,8 +1,9 @@
 {
   "id": "01-hello-world",
   "title": "Hello, World!",
-  "explanationMarkdown": "Every program starts somewhere. In Python, printing text to the screen is done with the `print()` function.\n\n```python\nprint(\"Hello, World!\")\n```\n\nTry running the starter code below, then change the message and run it again.",
-  "starterCode": "print(\"Hello, World!\")\n",
+  "referenceMarkdown": "Every program starts somewhere. In Python, printing text to the screen is done with the `print()` function.\n\n`print(\"Hello, World!\")`\n\nAnything inside the parentheses, wrapped in quotes, gets printed exactly as written.",
+  "challengeMarkdown": "Print the message `Hello, World!` to the screen using `print()`.",
+  "starterCode": "# TODO: Write your code here\n",
   "solutionCode": "print(\"Hello, World!\")\n",
   "hints": [
     "Text you want to print goes inside quotes.",

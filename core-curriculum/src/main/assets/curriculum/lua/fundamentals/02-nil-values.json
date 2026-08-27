@@ -1,0 +1,12 @@
+{
+  "id": "02-nil-values",
+  "title": "The Value 'nil'",
+  "referenceMarkdown": "`nil` represents the absence of any value in Lua. Declaring a variable without assigning a value automatically sets it to `nil`:\n\n`local emptyVariable`\n`print(emptyVariable)  -- nil`\n\nUse `local` to declare variables scoped to the current block. `nil` is distinct from `0`, `\"\"`, or `false` — it means no value has been assigned.",
+  "challengeMarkdown": "Create a variable called `playerStatus` without assigning any value to it. Then print this variable to see what Lua assigns by default.",
+  "starterCode": "-- TODO: Write your code here\n",
+  "solutionCode": "local playerStatus\nprint(playerStatus)\n",
+  "hints": [
+    "Use the local keyword, followed by just the variable name — no equals sign.",
+    "print() will show you exactly what value an unassigned variable holds."
+  ]
+}

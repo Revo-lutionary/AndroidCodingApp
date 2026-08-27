@@ -4,5 +4,5 @@ data class Track(
     val id: String,
     val language: Language,
     val title: String,
-    val lessonIds: List<String>,
+    val nodes: List<RoadmapNode>,
 )

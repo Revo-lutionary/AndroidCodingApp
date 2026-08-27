@@ -29,6 +29,6 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
 
-    implementation(libs.sora.editor)
+    api(libs.sora.editor)
     implementation(libs.sora.editor.language.textmate)
 }

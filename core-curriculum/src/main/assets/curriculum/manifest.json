@@ -4,19 +4,25 @@
       "id": "fundamentals",
       "language": "python",
       "title": "Python Fundamentals",
-      "lessons": ["01-hello-world"]
+      "nodes": [
+        { "id": "01-hello-world", "type": "lesson" }
+      ]
     },
     {
       "id": "fundamentals",
       "language": "lua",
       "title": "Lua(u) Fundamentals",
-      "lessons": []
+      "nodes": [
+        { "id": "01-hello-world", "type": "lesson" },
+        { "id": "02-nil-values", "type": "lesson" },
+        { "id": "03-type-quiz", "type": "quiz" }
+      ]
     },
     {
       "id": "fundamentals",
       "language": "cpp",
       "title": "C++ Fundamentals",
-      "lessons": []
+      "nodes": []
     }
   ]
 }
