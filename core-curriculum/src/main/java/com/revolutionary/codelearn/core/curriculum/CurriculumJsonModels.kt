@@ -19,6 +19,7 @@ internal data class TrackJson(
 internal data class NodeJson(
     val id: String,
     val type: String,
+    val title: String,
 )
 
 @Serializable

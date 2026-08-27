@@ -7,6 +7,15 @@ import androidx.core.view.ViewCompat
 import com.revolutionary.codelearn.core.model.Language
 import io.github.rosemoe.sora.event.ContentChangeEvent
 import io.github.rosemoe.sora.widget.CodeEditor
+import io.github.rosemoe.sora.widget.schemes.SchemeDarcula
+
+private val AUTO_PAIR_CLOSERS = mapOf(
+    '(' to ')',
+    '[' to ']',
+    '{' to '}',
+    '"' to '"',
+    '\'' to '\'',
+)
 
 /**
  * Wraps Sora-Editor's [CodeEditor] View for use in Compose. Per-language
@@ -29,8 +38,25 @@ fun CodeEditorField(
         modifier = modifier,
         factory = { context ->
             CodeEditor(context).apply {
+                colorScheme = SchemeDarcula()
                 setText(code)
+
+                var lastKnownText = code
+                var isAutoPairing = false
                 subscribeEvent(ContentChangeEvent::class.java) { _, _ ->
+                    if (!isAutoPairing) {
+                        val newlyTypedOpener = singleCharInserted(lastKnownText, text.toString())
+                        val closer = newlyTypedOpener?.let { AUTO_PAIR_CLOSERS[it] }
+                        if (closer != null) {
+                            isAutoPairing = true
+                            val line = cursor.leftLine
+                            val column = cursor.leftColumn
+                            this.text.insert(line, column, closer.toString())
+                            setSelection(line, column)
+                            isAutoPairing = false
+                        }
+                    }
+                    lastKnownText = text.toString()
                     onCodeChange(text.toString())
                 }
                 // Sora-Editor reacts to IME window insets on its own to keep the
@@ -51,8 +77,30 @@ fun CodeEditorField(
     )
 }
 
-/** Inserts [text] at the editor's current cursor position. */
+/** If [newText] is [oldText] with exactly one character inserted, returns that character. */
+private fun singleCharInserted(oldText: String, newText: String): Char? {
+    if (newText.length != oldText.length + 1) return null
+    var i = 0
+    while (i < oldText.length && i < newText.length && oldText[i] == newText[i]) i++
+    if (i >= newText.length) return null
+    if (oldText.substring(i) != newText.substring(i + 1)) return null
+    return newText[i]
+}
+
+/**
+ * Inserts [text] at the editor's current cursor position. When [text] is a
+ * single opening bracket/quote, also inserts the matching closer and leaves
+ * the cursor between the pair, matching the behavior for typed input.
+ */
 fun CodeEditor.insertAtCursor(text: String) {
     val cursor = this.cursor
-    this.text.insert(cursor.leftLine, cursor.leftColumn, text)
+    val line = cursor.leftLine
+    val column = cursor.leftColumn
+    val closer = text.singleOrNull()?.let { AUTO_PAIR_CLOSERS[it] }
+    if (closer != null) {
+        this.text.insert(line, column, text + closer)
+        setSelection(line, column + text.length)
+    } else {
+        this.text.insert(line, column, text)
+    }
 }

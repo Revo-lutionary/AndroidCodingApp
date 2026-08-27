@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.revolutionary.codelearn.core.model.NodeType
@@ -115,17 +116,27 @@ private fun RoadmapNodeRow(index: Int, uiNode: RoadmapUiNode, onClick: () -> Uni
 
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Column(
-            modifier = Modifier.offset(x = offsetX),
+            modifier = Modifier.offset(x = offsetX).padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (uiNode.state == RoadmapNodeState.CURRENT) {
                 Text(
-                    text = "START",
+                    text = "Up next",
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 6.dp),
                 )
             }
             NodeBubble(uiNode = uiNode, onClick = onClick)
+            Text(
+                text = uiNode.node.title,
+                modifier = Modifier.padding(top = 8.dp),
+                color = if (uiNode.state == RoadmapNodeState.LOCKED) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }

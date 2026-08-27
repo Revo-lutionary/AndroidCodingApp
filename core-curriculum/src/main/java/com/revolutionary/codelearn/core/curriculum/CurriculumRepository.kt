@@ -28,7 +28,11 @@ class CurriculumRepository(private val context: Context) {
                 language = Language.fromId(trackJson.language),
                 title = trackJson.title,
                 nodes = trackJson.nodes.map { nodeJson ->
-                    RoadmapNode(id = nodeJson.id, type = NodeType.valueOf(nodeJson.type.uppercase()))
+                    RoadmapNode(
+                        id = nodeJson.id,
+                        type = NodeType.valueOf(nodeJson.type.uppercase()),
+                        title = nodeJson.title,
+                    )
                 },
             )
         }

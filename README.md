@@ -79,13 +79,22 @@ DSL); KSP 2.3+ is required for Room/Hilt annotation processing to work under it.
 8. Optional opt-in device sync (Firebase free tier)
 9. Polish, accessibility, Play Store listing
 
-## Licensing note
+## License
 
-This project is intended to be released under an OSI-approved open-source
-license. This is required because the planned Python engine (Chaquopy) is
-free to use only in open-source-licensed apps — a commercial license is
-otherwise required. The code editor (Sora-Editor) is LGPL-2.1; used here as
-an unmodified dependency, which requires only an in-app "Open Source
-Licenses" notice, not open-sourcing the app itself. LuaJ is MPL 2.0
-(likewise fine as an unmodified dependency); the Luau interpreter planned
-for later is MIT licensed.
+This project is licensed under the **Mozilla Public License 2.0** (see
+[`LICENSE`](LICENSE)). MPL 2.0 is OSI-approved, which is what makes it
+possible to use Chaquopy's Python engine for free once that's wired up
+(Chaquopy's free tier requires an OSI-approved open-source license, or a
+paid commercial license otherwise). MPL 2.0 is file-level weak copyleft:
+anyone can view, fork, and modify this repository, and if they redistribute
+a modified version of a file from it, that file's modifications must stay
+under MPL 2.0 — but they can still combine it with proprietary code in a
+larger work. (A "view-only, no forking" license was considered, but isn't
+achievable for a public GitHub repo — GitHub's own Fork button works
+regardless of license — and wouldn't be an OSI-approved open-source license
+either, which would have blocked free Chaquopy usage.)
+
+Third-party licenses of note: Sora-Editor (code editor) is LGPL-2.1, used
+here as an unmodified dependency, which requires only an in-app "Open
+Source Licenses" notice rather than open-sourcing the app itself. LuaJ is
+MPL 2.0. The Luau interpreter planned for later is MIT licensed.

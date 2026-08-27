@@ -5,7 +5,7 @@
       "language": "python",
       "title": "Python Fundamentals",
       "nodes": [
-        { "id": "01-hello-world", "type": "lesson" }
+        { "id": "01-hello-world", "type": "lesson", "title": "Hello, World!" }
       ]
     },
     {
@@ -13,9 +13,9 @@
       "language": "lua",
       "title": "Lua(u) Fundamentals",
       "nodes": [
-        { "id": "01-hello-world", "type": "lesson" },
-        { "id": "02-nil-values", "type": "lesson" },
-        { "id": "03-type-quiz", "type": "quiz" }
+        { "id": "01-hello-world", "type": "lesson", "title": "Hello, World!" },
+        { "id": "02-nil-values", "type": "lesson", "title": "The Value 'nil'" },
+        { "id": "03-type-quiz", "type": "quiz", "title": "Quiz: type()" }
       ]
     },
     {
