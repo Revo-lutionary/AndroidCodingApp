@@ -3,6 +3,7 @@ package com.revolutionary.codelearn.core.editor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.ViewCompat
 import com.revolutionary.codelearn.core.model.Language
 import io.github.rosemoe.sora.event.ContentChangeEvent
 import io.github.rosemoe.sora.widget.CodeEditor
@@ -32,6 +33,13 @@ fun CodeEditorField(
                 subscribeEvent(ContentChangeEvent::class.java) { _, _ ->
                     onCodeChange(text.toString())
                 }
+                // Sora-Editor reacts to IME window insets on its own to keep the
+                // cursor visible above the keyboard. That fights with Compose's
+                // own Modifier.imePadding() on the screen around it, stacking
+                // two keyboard-height shifts into one large gap. Since Compose
+                // already handles keyboard avoidance here, tell this view to
+                // leave insets alone.
+                ViewCompat.setOnApplyWindowInsetsListener(this) { _, insets -> insets }
                 onEditorReady(this)
             }
         },

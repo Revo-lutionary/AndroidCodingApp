@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.revolutionary.codelearn.core.model.NodeType
+import com.revolutionary.codelearn.ui.screens.ide.IdeScreen
 import com.revolutionary.codelearn.ui.screens.lesson.LessonScreen
 import com.revolutionary.codelearn.ui.screens.onboarding.LanguagePickerScreen
 import com.revolutionary.codelearn.ui.screens.quiz.QuizScreen
@@ -17,6 +18,7 @@ object Routes {
     const val ROADMAP = "roadmap/{languageId}"
     const val LESSON = "lesson/{languageId}/{trackId}/{nodeId}"
     const val QUIZ = "quiz/{languageId}/{trackId}/{nodeId}"
+    const val IDE = "ide"
     const val SETTINGS = "settings"
 
     fun roadmap(languageId: String) = "roadmap/$languageId"
@@ -32,8 +34,12 @@ fun CodeLearnNavHost(navController: NavHostController = rememberNavController())
                 onLanguageSelected = { language ->
                     navController.navigate(Routes.roadmap(language.id))
                 },
+                onIdeClick = { navController.navigate(Routes.IDE) },
                 onSettingsClick = { navController.navigate(Routes.SETTINGS) },
             )
+        }
+        composable(Routes.IDE) {
+            IdeScreen(onClose = { navController.popBackStack() })
         }
         composable(Routes.ROADMAP) { backStackEntry ->
             val languageId = backStackEntry.arguments?.getString("languageId").orEmpty()
