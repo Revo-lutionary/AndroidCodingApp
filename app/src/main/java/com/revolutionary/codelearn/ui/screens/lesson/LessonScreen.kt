@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,9 +26,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -51,7 +54,7 @@ import io.github.rosemoe.sora.widget.CodeEditor
 
 private val TAB_TITLES = listOf("Reference", "Challenge", "Code", "Solution")
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun LessonScreen(
     languageId: String,
@@ -62,6 +65,12 @@ fun LessonScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableIntStateOf(0) }
+    val isLastTab = selectedTab == TAB_TITLES.lastIndex
+    // Hide the persistent Continue bar while the keyboard is up: it would sit
+    // behind the IME anyway, and its reserved height would otherwise stack
+    // with imePadding() below and push the Code tab's toolbar/Run button up
+    // far above the real keyboard.
+    val imeVisible = WindowInsets.isImeVisible
 
     LaunchedEffect(languageId, trackId, lessonId) {
         viewModel.load(languageId, trackId, lessonId)
@@ -79,12 +88,12 @@ fun LessonScreen(
                     },
                 )
                 if (uiState.lesson != null) {
-                    TabRow(selectedTabIndex = selectedTab) {
+                    ScrollableTabRow(selectedTabIndex = selectedTab, edgePadding = 12.dp) {
                         TAB_TITLES.forEachIndexed { index, title ->
                             Tab(
                                 selected = selectedTab == index,
                                 onClick = { selectedTab = index },
-                                text = { Text(title) },
+                                text = { Text(title, maxLines = 1) },
                             )
                         }
                     }
@@ -92,16 +101,20 @@ fun LessonScreen(
             }
         },
         bottomBar = {
-            if (uiState.lesson != null) {
+            if (uiState.lesson != null && !imeVisible) {
                 Surface(shadowElevation = 4.dp) {
                     Button(
                         onClick = {
-                            viewModel.markComplete()
-                            onFinish()
+                            if (isLastTab) {
+                                viewModel.markComplete()
+                                onFinish()
+                            } else {
+                                selectedTab++
+                            }
                         },
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                     ) {
-                        Text("Continue")
+                        Text(if (isLastTab) "Finish" else "Continue")
                     }
                 }
             }
