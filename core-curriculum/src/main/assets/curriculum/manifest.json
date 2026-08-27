@@ -1,0 +1,22 @@
+{
+  "tracks": [
+    {
+      "id": "fundamentals",
+      "language": "python",
+      "title": "Python Fundamentals",
+      "lessons": ["01-hello-world"]
+    },
+    {
+      "id": "fundamentals",
+      "language": "lua",
+      "title": "Lua(u) Fundamentals",
+      "lessons": []
+    },
+    {
+      "id": "fundamentals",
+      "language": "cpp",
+      "title": "C++ Fundamentals",
+      "lessons": []
+    }
+  ]
+}
