@@ -80,7 +80,7 @@ fun CodePlaygroundArea(
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 4.dp),
             horizontalArrangement = Arrangement.End,
         ) {
             Button(onClick = onRun, enabled = !isRunning) {

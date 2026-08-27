@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.chaquopy)
 }
 
 android {
@@ -16,7 +17,20 @@ android {
         versionCode = 1
         versionName = "0.1.0"
 
+        // Chaquopy (Python engine) bundles a full CPython distribution per
+        // ABI, so we constrain to two: real modern arm64 devices, plus
+        // x86_64 for emulators.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    chaquopy {
+        defaultConfig {
+            version = "3.13"
+        }
     }
 
     buildTypes {

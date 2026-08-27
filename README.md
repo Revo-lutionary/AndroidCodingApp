@@ -9,9 +9,13 @@ execution happens on-device — no backend server required.
 Navigation, DI wiring, curriculum loading, and progress tracking are in
 place, with a Duolingo-style flow: pick a language → a roadmap of lesson/quiz
 nodes → a tabbed lesson (Reference / Challenge / Code / Solution) with a
-symbol toolbar and a Run button, or a multiple-choice quiz. **Lua code
-actually executes on-device** via LuaJ (a pure-JVM Lua interpreter — no NDK
-needed); Python and C++ execution are not wired up yet.
+symbol toolbar and a Run button, or a multiple-choice quiz. **Lua and Python
+code actually execute on-device** — Lua via LuaJ (a pure-JVM interpreter, no
+NDK needed), Python via Chaquopy (a bundled CPython). There's also a
+standalone IDE with browser-style, Room-persisted tabs (survive closing the
+app) for freeform code without a lesson attached. C++ execution is not
+wired up yet — it needs a real bundled compiler toolchain, a much larger
+undertaking than either interpreter.
 
 ## Module map
 
@@ -25,11 +29,19 @@ needed); Python and C++ execution are not wired up yet.
 :engine-lua          — Real Lua execution via LuaJ (pure JVM, standard Lua 5.1 semantics)
 ```
 
-Future modules (not yet present): `:engine-python` (Chaquopy), `:engine-cpp`
-(bundled Clang toolchain), `:sync-firebase` (optional opt-in progress sync).
-`:engine-lua` currently targets standard Lua via LuaJ as an interim engine —
-swapping in the real Luau VM via NDK/JNI (for exact Roblox-style semantics)
-is tracked as follow-up work.
+Python execution (Chaquopy) lives directly in `:app` rather than its own
+`:engine-python` module — Chaquopy's Gradle plugin needs to be applied to
+the application module itself, not a library module, so it doesn't fit the
+same pattern as `:engine-lua`. `ExecutionEngineRegistry` (in `:app`) maps
+`Language` to whichever `ExecutionEngine` is registered for it via a Hilt
+multibinding, so engines stay swappable regardless of which module they
+live in.
+
+Future modules (not yet present): `:engine-cpp` (bundled Clang toolchain),
+`:sync-firebase` (optional opt-in progress sync). `:engine-lua` currently
+targets standard Lua via LuaJ as an interim engine — swapping in the real
+Luau VM via NDK/JNI (for exact Roblox-style semantics) is tracked as
+follow-up work.
 
 ## App flow
 
@@ -44,6 +56,9 @@ is tracked as follow-up work.
    of our own.
 4. **Quiz** — a multiple-choice question with immediate right/wrong
    feedback and an explanation.
+5. **IDE** (reachable from a card on the language picker) — browser-style
+   tabs (add/close/switch, persisted to Room so they survive closing the
+   app) for testing code in any language without a lesson attached.
 
 ## Curriculum content
 
@@ -72,12 +87,16 @@ DSL); KSP 2.3+ is required for Room/Hilt annotation processing to work under it.
 1. ~~Curriculum content authoring~~ (seeded; more lessons/quizzes needed for all 3 languages)
 2. ~~Duolingo-style navigation flow, symbol toolbar, quiz UI~~
 3. ~~Lua execution (LuaJ)~~
-4. Python execution via Chaquopy
-5. C++ execution via a bundled Clang toolchain (subprocess compile + run)
-6. Real Luau VM (NDK/JNI) to replace the interim LuaJ engine
-7. Sora-Editor syntax highlighting (TextMate grammars) per language
-8. Optional opt-in device sync (Firebase free tier)
-9. Polish, accessibility, Play Store listing
+4. ~~Python execution via Chaquopy~~
+5. ~~Persistent multi-tab IDE~~
+6. C++ execution via a bundled Clang toolchain (subprocess compile + run) —
+   the remaining big engine; unlike Lua/Python there's no lightweight
+   interim option, it needs a real bundled compiler
+7. Real Luau VM (NDK/JNI) to replace the interim LuaJ engine
+8. Sora-Editor TextMate syntax highlighting (currently a flat Darcula theme,
+   no per-token color)
+9. Optional opt-in device sync (Firebase free tier)
+10. Polish, accessibility, Play Store listing
 
 ## License
 
