@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -100,7 +101,7 @@ fun LessonScreen(
         },
         bottomBar = {
             if (uiState.lesson != null && !imeVisible) {
-                Surface(shadowElevation = 4.dp) {
+                Surface(shadowElevation = 4.dp, modifier = Modifier.navigationBarsPadding()) {
                     Button(
                         onClick = {
                             if (isLastTab) {
@@ -117,9 +118,14 @@ fun LessonScreen(
                 }
             }
         },
+        // Bottom inset is handled per-tab below (nav bar for the scrollable
+        // tabs, nav-bar-or-keyboard for the Code tab) rather than reserved
+        // here, since Scaffold's own padding always includes the nav bar
+        // unconditionally -- stacking that with a tab's own keyboard-aware
+        // padding is what caused the gap above the keyboard.
     ) { padding ->
         val lesson = uiState.lesson
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Box(modifier = Modifier.fillMaxSize().padding(top = padding.calculateTopPadding())) {
             if (uiState.isLoading || lesson == null) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
@@ -148,6 +154,7 @@ private fun ReferenceTab(referenceMarkdown: String) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .navigationBarsPadding()
             .padding(20.dp),
     ) {
         Text(text = renderInlineCode(referenceMarkdown))
@@ -160,6 +167,7 @@ private fun ChallengeTab(challengeMarkdown: String) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .navigationBarsPadding()
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -184,6 +192,7 @@ private fun SolutionTab(solutionCode: String) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
+            .navigationBarsPadding()
             .padding(20.dp),
     ) {
         Surface(

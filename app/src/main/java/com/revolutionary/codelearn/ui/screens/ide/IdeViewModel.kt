@@ -93,6 +93,31 @@ class IdeViewModel @Inject constructor(
         }
     }
 
+    fun renameTab(tabId: String, newTitle: String) {
+        val trimmed = newTitle.trim()
+        if (trimmed.isEmpty()) return
+        viewModelScope.launch {
+            val tab = _uiState.value.tabs.firstOrNull { it.id == tabId } ?: return@launch
+            tabRepository.upsert(tab.copy(title = trimmed))
+        }
+    }
+
+    /** Moves the tab at [fromIndex] to [toIndex], shifting the others over. */
+    fun reorderTabs(fromIndex: Int, toIndex: Int) {
+        val tabs = _uiState.value.tabs.toMutableList()
+        if (fromIndex !in tabs.indices || toIndex !in tabs.indices) return
+        val moved = tabs.removeAt(fromIndex)
+        tabs.add(toIndex, moved)
+        _uiState.value = _uiState.value.copy(tabs = tabs)
+        viewModelScope.launch {
+            tabs.forEachIndexed { index, tab ->
+                if (tab.position != index) {
+                    tabRepository.upsert(tab.copy(position = index))
+                }
+            }
+        }
+    }
+
     fun selectLanguage(tabId: String, language: Language) {
         viewModelScope.launch {
             val tab = _uiState.value.tabs.firstOrNull { it.id == tabId } ?: return@launch

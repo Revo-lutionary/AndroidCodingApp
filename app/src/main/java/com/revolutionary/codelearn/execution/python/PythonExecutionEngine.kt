@@ -37,7 +37,13 @@ class PythonExecutionEngine @Inject constructor() : ExecutionEngine {
             sys.put("stderr", stderrCapture)
 
             val result = try {
-                py.builtins.callAttr("exec", source)
+                // exec(source) alone tries to inspect the calling Python frame for
+                // its globals/locals, which fails with "SystemError: frame does not
+                // exist" when called from a raw Java thread that never entered
+                // Python (there's no such frame). Passing an explicit globals dict
+                // sidesteps that lookup entirely.
+                val globals = py.builtins.callAttr("dict")
+                py.builtins.callAttr("exec", source, globals)
                 ExecutionResult(
                     stdout = stdoutCapture.callAttr("getvalue").toString(),
                     stderr = stderrCapture.callAttr("getvalue").toString(),

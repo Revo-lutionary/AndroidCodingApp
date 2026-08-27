@@ -4,10 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.ime
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
@@ -45,7 +49,12 @@ fun CodePlaygroundArea(
 ) {
     var editorRef by remember { mutableStateOf<CodeEditor?>(null) }
 
-    Column(modifier = modifier.imePadding()) {
+    // Bottom inset should be whichever is taller right now -- the nav bar
+    // (keyboard closed) or the keyboard (open) -- not both added together.
+    // Scaffold's own content padding already reserves the nav bar's height
+    // unconditionally, so stacking a plain imePadding() on top of that
+    // double-counts it once the keyboard actually opens.
+    Column(modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime))) {
         CodeEditorField(
             code = code,
             onCodeChange = onCodeChange,
